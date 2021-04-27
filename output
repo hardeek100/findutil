@@ -1,0 +1,125 @@
+rm find
+gcc -o find Poudel_Hardik_Project#2.c
+*******************************************
+Starting from 1 with find testdir
+testdir/dir1
+testdir/dir1/.
+testdir/dir1/fil1
+testdir/dir1/..
+testdir/dir1/file1
+testdir/dir1/uuuu
+testdir/.
+testdir/dir2
+testdir/dir2/.
+testdir/dir2/file2
+testdir/dir2/..
+testdir/dir2/file1
+testdir/dir3
+testdir/dir3/.
+testdir/dir3/hon
+testdir/dir3/..
+testdir/file5
+testdir/..
+*******************************************
+2.1 find testdir -n file1
+testdir/dir1/file1
+testdir/dir2/file1
+*******************************************
+Lets create a new file foo inside testdir
+2.2 find testdir -m -10
+testdir/dir1/..
+testdir/dir1/uuuu
+testdir/.
+testdir/dir2/..
+testdir/dir3
+testdir/dir3/.
+testdir/dir3/..
+testdir/..
+testdir/foo
+*******************************************
+lets see for files modified 10 mins ago
+testdir/dir1
+testdir/dir1/.
+testdir/dir1/fil1
+testdir/dir1/file1
+testdir/dir2
+testdir/dir2/.
+testdir/dir2/file2
+testdir/dir2/file1
+testdir/dir3/hon
+testdir/file5
+******************************************
+2.3 find by inode 60162272
+testdir/file5
+******************************************
+3 find by criteria and delete
+by name,
+testdir/foo deleted
+*******************************************
+by min but before that lets create a new file called gooo
+before deleting
+testdir/dir1
+testdir/dir1/.
+testdir/dir1/fil1
+testdir/dir1/..
+testdir/dir1/file1
+testdir/dir1/uuuu
+testdir/.
+testdir/dir2
+testdir/dir2/.
+testdir/dir2/file2
+testdir/dir2/..
+testdir/dir2/file1
+testdir/dir3
+testdir/dir3/.
+testdir/dir3/hon
+testdir/dir3/gooo
+testdir/dir3/..
+testdir/file5
+testdir/..
+*****************************************
+after deleting,
+testdir/dir1/.. deleted.
+testdir/dir1/uuuu deleted.
+testdir/. deleted.
+testdir/dir2/.. deleted.
+testdir/dir3 deleted.
+testdir/dir3/. deleted.
+testdir/dir3/gooo deleted.
+testdir/dir3/.. deleted.
+testdir/.. deleted.
+testdir/dir1
+testdir/dir1/.
+testdir/dir1/fil1
+testdir/dir1/..
+testdir/dir1/file1
+testdir/.
+testdir/dir2
+testdir/dir2/.
+testdir/dir2/file2
+testdir/dir2/..
+testdir/dir2/file1
+testdir/dir3
+testdir/dir3/.
+testdir/dir3/hon
+testdir/dir3/..
+testdir/file5
+testdir/..
+*******************************************
+with inode 60162273 find testdir -i 60162273 -d
+******************************************
+for 4
+cat by name
+Hello I am from dir1 file1
+*****************************************
+cat by min
+******************************************
+cat by inode
+******************************************
+rm by name
+testdir/dir3/foo deleted
+*****************************************
+rm by inode 60162263
+*****************************************
+rm by minutes
+****************************************

@@ -1,3 +1,16 @@
+/* 
+Class Spring 2021 Operating System (CS-4352-001)
+Project 2
+
+Author: Hardik Poudel
+Student ID: R11645072
+Date: 4/27/2020
+
+desc: This is a C program to demonstrate find utility on Linux/Unix-like system.
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,6 +21,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
+// Global variables
 
 char *where, *name, *mmin, *inum, *command;
 int w,n,m,i,d,e;
@@ -17,6 +31,7 @@ char temp2[] = ".";
 char temp3[] = "..";
 
 
+// Function to get inode of the filepath.
 int get_inode(char* path){
 	int fd = open(path, O_RDONLY);
 	if(fd < 0){
@@ -29,6 +44,7 @@ int get_inode(char* path){
 	return buf.st_ino;
 }
 
+// Function to check if the file has been modified in the given time.
 int isModified(char* path, int mmin){
 	struct stat attr;
 	stat(path, &attr);
@@ -49,7 +65,7 @@ int isModified(char* path, int mmin){
 	return 0;
 }
 
-
+// Function to find all the file path of the given directory.
 void find_where(char* where){
 	//printf("Finding here: %s\n", where);
 	DIR *where_p = opendir(where);
@@ -73,6 +89,7 @@ void find_where(char* where){
 	closedir(where_p);
 }
 
+// Function to find the given files that are in the given directory
 void find_where_name(char* where, char* name){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -99,6 +116,7 @@ void find_where_name(char* where, char* name){
 				
 }
 
+// Function to find the files that are modified in the given time.
 void find_where_min(char* where, int mmin){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -124,6 +142,7 @@ void find_where_min(char* where, int mmin){
 	closedir(where_p);
 }
 
+// Function to find the files that have the given inode in the given directory.
 void find_where_inode(char* where, int inum){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -149,6 +168,7 @@ void find_where_inode(char* where, int inum){
 	closedir(where_p);
 }
 
+// Function to find the file in the given directory and delete it if the name matches.
 void find_where_delete(char* where, char* name){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -175,6 +195,7 @@ void find_where_delete(char* where, char* name){
 	closedir(where_p);
 }
 
+// Function to find the file in the given directory if it was modified in the given time and delete it.
 void find_where_delete_min(char* where, int mmin){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -201,6 +222,8 @@ void find_where_delete_min(char* where, int mmin){
 	closedir(where_p);
 }
 
+
+// Function to find the file in the given directory with the inode and delete it.
 void find_where_delete_inode(char* where, int inum){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -227,6 +250,7 @@ void find_where_delete_inode(char* where, int inum){
 	closedir(where_p);
 }
 
+// Function to find the file in the given directory and move it to a given destination.
 void execute_move(char* where, char* name, char* dest){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -251,6 +275,7 @@ void execute_move(char* where, char* name, char* dest){
 	}
 }
 
+// Function to find the file in the given directory if the inode matches and move it to a given destination.
 void execute_move_inode(char* where, int inum, char* dest){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -275,6 +300,7 @@ void execute_move_inode(char* where, int inum, char* dest){
 	}
 }
 
+// Function to find the file in the given directory and move it if the file has been modified in the given time.
 void execute_move_min(char* where, int min, char* dest){
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
@@ -299,28 +325,32 @@ void execute_move_min(char* where, int min, char* dest){
 	}
 }
 
+int isFile(char* path){
+	struct stat st;
+	stat(path, &st);
+	return S_ISREG(st.st_mode);
+}
 
+// Function to find the file in the given directory and cat it if the name matches.
 void execute_cat(char* where, char* name){
 	char comm[] = "cat ";
 	DIR *where_p = opendir(where);
 	struct dirent* where_dirp;
 	if(where_p != NULL){
 		while((where_dirp = readdir(where_p)) != NULL){
-			
-			char *temp1 = where_dirp->d_name; 
+			char * temp1 = where_dirp->d_name;
 			
 			char *fullpath = malloc(sizeof(char)*2000);
 			fullpath = strcpy(fullpath, where);
 			strcat(fullpath, temp);
 			strcat(fullpath, temp1);
-		
-				
-			if(strcmp(name, temp1) == 0){
-				strcat(comm, fullpath);
-				system(comm);
-			}
 			
+
 			if(strcmp(temp1, temp2) != 0 && strcmp(temp1, temp3) != 0){
+				if(strcmp(temp1, name) == 0 && isFile(fullpath) == 1){
+					strcat(comm, fullpath);
+					system(comm);
+				}
 				execute_cat(fullpath, name);
 			}
 		}
@@ -438,8 +468,9 @@ void main(int argc, char* argv[]){
 	}else if(w == 1 && n == 0 && m == 0 && i == 1 && d == 1 && e == 0){
 		find_where_delete_inode(where, atoi(inum));
 	}
+	else if(w == 1 && n == 1 && m == 0 && i == 0 && d == 0 && e == 1){					
 
-	else if(w == 1 && n == 1 && m == 0 && i == 0 && d == 0 && e == 1){						if(strcmp(mv, command) == 0){
+		if(strcmp(mv, command) == 0){
 			execute_move(where, name, dest);
 		}else if(strcmp(rm, command) == 0){
 			find_where_delete(where, name);
@@ -447,6 +478,7 @@ void main(int argc, char* argv[]){
 			execute_cat(where, name);
 		}
 	}else if(w == 1 && n == 0 && m == 1 && i == 0 && d == 0 && e == 1){
+	
 		if(strcmp(mv, command) == 0){
 			execute_move_min(where, atoi(mmin), dest);
 		}else if(strcmp(rm, command) == 0){
@@ -454,6 +486,7 @@ void main(int argc, char* argv[]){
 		}else if(strcmp(cat, command) == 0){
 			execute_cat_min(where, atoi(mmin));
 		}
+	
 	}else if(w == 1 && n == 0 && m == 0 && i == 1 && d == 0 && e == 1){
 		if(strcmp(mv, command) == 0){
 			execute_move_inode(where, atoi(inum), dest);
